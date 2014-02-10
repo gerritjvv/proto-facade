@@ -28,6 +28,7 @@
     obj))
 
 (defn convert-to-map 
+  "Take a Message and wraps it in an object that will pose the message as a map."
   ([^MessageOrBuilder message]
     (convert-to-map (.getDescriptorForType message) message))
   ([^Descriptors$Descriptor descriptor ^MessageOrBuilder message]
