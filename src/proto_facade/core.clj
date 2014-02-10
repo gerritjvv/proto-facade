@@ -28,7 +28,7 @@
   "Treat nested messages correctly, by calling convert-to-map and for lists (map resolve-value obj)"
   (cond
     (instance? MessageOrBuilder obj)
-    (convert-to-map obj)
+    (convert-to-map obj {:convert-f convert-f})
     (instance? java.util.Collection obj)
     (map #(resolve-value % convert-f) obj)
     (instance? ByteString obj)
@@ -37,6 +37,9 @@
       (convert-f (.toByteArray ^ByteString obj)))
     :else
      (convert-f obj)))
+
+(defn convert-to-map2 [message convert-f]
+  (convert-to-map message {:convert-f convert-f}))
 
 (defn convert-to-map 
   "Take a Message and wraps it in an object that will pose the message as a map."

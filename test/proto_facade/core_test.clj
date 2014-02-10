@@ -91,7 +91,19 @@
 							            (.setCountry "EDF")))
 						            (.build)))]
           (-> m (get "address") (get "city")) => "ABC"
-          (-> m (get "address") (get "country")) => "EDF")))
+          (-> m (get "address") (get "country")) => "EDF"))
+       (fact "Test java Converter class with converter function"
+        
+        (let [m (Converter/convertToMap
+                   (-> (Data$Person/newBuilder)
+						            (.setAddress
+							            (-> (Data$Address/newBuilder) 
+							            (.setCity "ABC")
+							            (.setCountry "EDF")))
+						            (.build))
+                   #(string? %))]
+          (-> m (get "address") (get "city")) => true
+          (-> m (get "address") (get "country")) => true)))
           
         
         

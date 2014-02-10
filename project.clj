@@ -1,4 +1,4 @@
-(defproject proto-facade "0.3.5"
+(defproject proto-facade "0.3.6"
   :description "Utility that exposes a ProtoBuff Message as a Map"
   :url "https://github.com/gerritjvv/proto-facade"
   :license {:name "Apache v2"
