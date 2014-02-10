@@ -11,6 +11,7 @@
                 *assert* false}
   
   :dependencies [[com.google.protobuf/protobuf-java "2.5.0" :scope "provided"]
+		 [midje "1.6-alpha2" :scope "test"]
                  [org.clojure/clojure "1.5.1"]]
   
   :proto-path "test/resources/proto"

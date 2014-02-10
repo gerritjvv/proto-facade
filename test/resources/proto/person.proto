@@ -8,13 +8,15 @@ message Address{
 }
  
 message Person {
-  required int32  id    = 1;
-  required string name  = 2;
+  optional int32  id    = 1;
+  optional string name  = 2;
   optional string email = 3;
   repeated string likes = 4;
   
   optional Address address = 5;
-
+  
+  repeated Address prevAddresses = 6;
+  
 }
 
 

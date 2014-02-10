@@ -23,8 +23,13 @@
 (declare convert-to-map)
 
 (defn resolve-value [obj]
-  (if (instance? MessageOrBuilder obj)
+  "Treat nested messages correctly, by calling convert-to-map and for lists (map resolve-value obj)"
+  (cond
+    (instance? MessageOrBuilder obj)
     (convert-to-map obj)
+    (instance? java.util.Collection obj)
+    (map resolve-value obj)
+    :else
     obj))
 
 (defn convert-to-map 
