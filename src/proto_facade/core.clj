@@ -24,7 +24,7 @@
 
 (declare convert-to-map)
 
-(defn resolve-value [obj]
+(defn resolve-value [obj convert-f]
   "Treat nested messages correctly, by calling convert-to-map and for lists (map resolve-value obj)"
   (cond
     (instance? MessageOrBuilder obj)
@@ -34,21 +34,23 @@
     (instance? ByteString obj)
     (if (nil? obj) 
       nil
-      (.toByteArray ^ByteString obj))
+      (convert-f (.toByteArray ^ByteString obj)))
     :else
-    obj))
+     (convert-f obj)))
 
 (defn convert-to-map 
   "Take a Message and wraps it in an object that will pose the message as a map."
   ([^MessageOrBuilder message]
-    (convert-to-map (.getDescriptorForType message) message {}))
-  ([^Descriptors$Descriptor descriptor ^MessageOrBuilder message assoced-vals]
+    (convert-to-map (.getDescriptorForType message) message {} {}))
+  ([^MessageOrBuilder message conf]
+    (convert-to-map (.getDescriptorForType message) message {} conf))
+  ([^Descriptors$Descriptor descriptor ^MessageOrBuilder message assoced-vals {:keys [convert-f] :or {convert-f identity} :as conf}]
     (let [
           get-f (fn [^Descriptors$FieldDescriptor field] 
                         (let [n (.getName field)]
                             (if-let [x (get assoced-vals n)] 
                               x 
-                              (resolve-value (.getField message field)))))
+                              (resolve-value (.getField message field) convert-f))))
           get-name (fn [v]
                      (if 
                        (instance? Descriptors$FieldDescriptor v)
@@ -110,7 +112,7 @@
             (clojure.lang.RT/printString this))
           
           (assoc [this k v]
-            (convert-to-map descriptor message (assoc assoced-vals k v)))
+            (convert-to-map descriptor message (assoc assoced-vals k v) conf))
           
           (entryAt [this k]
             (MapEntry. k (.get this k)))

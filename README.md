@@ -12,7 +12,7 @@ any extra cost of parsing the data into maps.
 
 Leiningen
 
-```[proto-facade "0.3.4"]```
+```[proto-facade "0.3.5"]```
 
 
 Maven
@@ -21,7 +21,7 @@ Maven
 <dependency>
  <groupId>proto-facade</groupId>
  <artifactId>proto-facade</artifactId>
- <version>0.3.4</version>
+ <version>0.3.5</version>
 </dependency>
 ```
 
@@ -57,7 +57,22 @@ Note: before you can run the example you need:
 (count m)
 ;; 6
 
+;;assoc to override a value
+(def m2 (assoc m "name" 1))
+
+(get m2 "name")
+;; 1
+
+;;assoc to add a new key
+(def m2 (assoc m :abc "a"))
+
+(get m2 :abc)
+;; "a"
+
+;;add a function to convert values
+
 ```
+
 
 ## From java
 
