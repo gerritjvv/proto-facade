@@ -6,6 +6,7 @@
   
 
   :javac-options ["-target" "1.6" "-source" "1.6" "-Xlint:-options"]
+  :java-source-paths ["java"]
   :warn-on-reflection true
   :global-vars {*warn-on-reflection* true
                 *assert* false}

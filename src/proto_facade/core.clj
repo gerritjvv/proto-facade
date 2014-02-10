@@ -1,8 +1,6 @@
 (ns proto-facade.core
-  
-  (import [com.google.protobuf Descriptors$Descriptor MessageOrBuilder Descriptors$FieldDescriptor]
-          [java.util Map Map$Entry])
-  )
+  (:import [com.google.protobuf Descriptors$Descriptor MessageOrBuilder Descriptors$FieldDescriptor]
+           [java.util Map Map$Entry]))
 
 (defn entry-set [k v]
   (let [h (hash [k v])]

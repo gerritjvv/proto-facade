@@ -1,6 +1,7 @@
 (ns proto-facade.core-test
   (:require [proto-facade.core :refer :all])
-  (:import [test Data$Person Data$Address])
+  (:import [test Data$Person Data$Address]
+           [protofacade Converter])
   (:use [midje.sweet]))
 
 
@@ -58,7 +59,18 @@
         
         (let [entries (.entrySet m)]
           (count entries) => (count (.keySet m))
-          (map #(.getKey %) entries) => ["email" "id" "likes" "address" "prevAddresses" "name"]))))
+          (sort (map #(.getKey %) entries)) => ["address" "email" "id" "likes" "name" "prevAddresses"])))
+      (fact "Test java Converter class"
+        
+        (let [m (Converter/convertToMap
+                   (-> (Data$Person/newBuilder)
+						            (.setAddress
+							            (-> (Data$Address/newBuilder) 
+							            (.setCity "ABC")
+							            (.setCountry "EDF")))
+						            (.build)))]
+          (-> m (get "address") (get "city")) => "ABC"
+          (-> m (get "address") (get "country")) => "EDF")))
           
         
         

@@ -20,6 +20,8 @@ Note: before you can run the example you need:
 * run: ```lein protobuf``` to build the proto classes
  
  
+### From Clojure
+
 ```clojure
 
 (use 'proto-facade.core :reload)
@@ -39,6 +41,21 @@ Note: before you can run the example you need:
 
 (count m)
 ;; 6
+
+```
+
+## From java
+
+```java
+
+import java.util.Map;
+import test.Data;
+import protofacade.Converter;
+
+Data.Person p = Data.Person.newBuilder().setName("test").build();
+Map<String, Object> m = Converter.convertToMap(p);
+System.out.println(m.get("name"));
+// "test"		
 
 ```
 
