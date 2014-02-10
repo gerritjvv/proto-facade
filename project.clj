@@ -1,11 +1,11 @@
-(defproject proto-facade "0.3.2"
+(defproject proto-facade "0.3.4"
   :description "Utility that exposes a ProtoBuff Message as a Map"
   :url "https://github.com/gerritjvv/proto-facade"
   :license {:name "Apache v2"
             :url "https://github.com/gerritjvv/proto-facade/blob/master/LICENSE"}
   
 
-  :javac-options ["-target" "1.6" "-source" "1.6" "-Xlint:-options"]
+  :javac-options ["-target" "1.5" "-source" "1.5" "-Xlint:-options"]
   :java-source-paths ["java"]
   :warn-on-reflection true
   :global-vars {*warn-on-reflection* true

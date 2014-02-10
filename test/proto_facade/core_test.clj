@@ -47,6 +47,19 @@
               (get address "city") => (str i)
               (recur (rest addresses) (inc i)))))))
     
+   
+   (fact "Test Assoc"
+     (let [m (convert-to-map 
+				        (-> (Data$Person/newBuilder)
+                    (.setName "nn")))
+           m2 (assoc m "name" "aa")
+           m3 (assoc m :abc 1)]
+       
+       (get m "name") => "nn"
+       (get m2 "name") => "aa"
+       (get m3 :abc) => 1
+       
+       ))
    (fact "Test map interface values"
       (let [m (convert-to-map 
 				        (-> (Data$Person/newBuilder)

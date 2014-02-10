@@ -1,7 +1,10 @@
 (ns proto-facade.core
   (:import [com.google.protobuf Descriptors$Descriptor MessageOrBuilder Descriptors$FieldDescriptor]
            [java.util Map Map$Entry]
+           [protofacade ProtoMap]
+           [clojure.lang MapEntry]
            [com.google.protobuf ByteString]))
+
 
 (defn entry-set [k v]
   (let [h (hash [k v])]
@@ -38,28 +41,55 @@
 (defn convert-to-map 
   "Take a Message and wraps it in an object that will pose the message as a map."
   ([^MessageOrBuilder message]
-    (convert-to-map (.getDescriptorForType message) message))
-  ([^Descriptors$Descriptor descriptor ^MessageOrBuilder message]
-    (let [key-set (map (fn [^Descriptors$FieldDescriptor field] (.getName field)) (.getFields descriptor))
-          values (map (fn [^Descriptors$FieldDescriptor field] (resolve-value (.getField message field))) (.getFields descriptor))
-          entry-set (map (fn [^Descriptors$FieldDescriptor field] (entry-set (.getName field) (resolve-value (.getField message field)))) (.getFields descriptor))]
+    (convert-to-map (.getDescriptorForType message) message {}))
+  ([^Descriptors$Descriptor descriptor ^MessageOrBuilder message assoced-vals]
+    (let [
+          get-f (fn [^Descriptors$FieldDescriptor field] 
+                        (let [n (.getName field)]
+                            (if-let [x (get assoced-vals n)] 
+                              x 
+                              (resolve-value (.getField message field)))))
+          get-name (fn [v]
+                     (if 
+                       (instance? Descriptors$FieldDescriptor v)
+                       (.getName ^Descriptors$FieldDescriptor v)
+                       v))
+          
+          get-f2 (fn [k]
+                   (if 
+                     (instance? Descriptors$FieldDescriptor k)
+                     (get-f k)
+                     (get assoced-vals k)))
+          
+          mixed-keys (apply conj (keys assoced-vals) (.getFields descriptor))
+          key-set (apply conj (keys assoced-vals) (map (fn [^Descriptors$FieldDescriptor field] (.getName field)) (.getFields descriptor)))
+          values  (map (fn [field] (get-f2 field)) mixed-keys)
+          entry-set (map (fn [field] (entry-set (get-name field) (get-f2 field))) mixed-keys)
+          imap-entries (map (fn [field] (MapEntry. (get-name field) (get-f2 field))) mixed-keys)]
     
-		    (reify Map
+		    (reify ProtoMap
         
          (containsKey [this k]
-		        (-> descriptor (.findFieldByName k) nil? not))
+		        (let [v (-> descriptor (.findFieldByName k) nil? not)]
+              (if v v (not (nil? (get assoced-vals k))))))
+                
 		      
 		      (containsValue [this k] 
              (true? (some #(= % k)
                        values)))
         
 		      (entrySet [this] (set entry-set))
+        
 		      (get [this k]
-		        (try 
-                (resolve-value (.getField message (.findFieldByName descriptor k)))
+		        (try ;if a field of the ProtoBuf get the value otherwise lookup in the assoced map
+              (if (string? k)  
+	              (if-let [field (.findFieldByName descriptor k)]
+	                  (get-f field)
+	                  (get-f2 k))
+                (get-f2 k))
                 (catch NullPointerException npe nil)))
 		      (hashCode [this]
-		          (hash message))
+		          (hash [assoced-vals message]))
 		      (isEmpty [this] false)
 		      (keySet [this] 
 		        (set key-set))
@@ -78,5 +108,27 @@
           (toString [this]
             ;better java interop
             (clojure.lang.RT/printString this))
-		    
-		    ))))
+          
+          (assoc [this k v]
+            (convert-to-map descriptor message (assoc assoced-vals k v)))
+          
+          (entryAt [this k]
+            (MapEntry. k (.get this k)))
+            
+          (valAt [this k]
+            (.get this k))
+          
+          (count [this]
+            (.size this))
+          
+          (cons [this v]
+            (cons v imap-entries))
+          
+          (empty [this]
+            this)
+          (equiv [this obj]
+            (= (hash obj) (.hashCode this)))
+          
+          (seq [this]
+            imap-entries)))))
+          

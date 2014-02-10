@@ -12,7 +12,7 @@ any extra cost of parsing the data into maps.
 
 Leiningen
 
-```[proto-facade "0.3.2"]```
+```[proto-facade "0.3.4"]```
 
 
 Maven
@@ -21,7 +21,7 @@ Maven
 <dependency>
  <groupId>proto-facade</groupId>
  <artifactId>proto-facade</artifactId>
- <version>0.3.2</version>
+ <version>0.3.4</version>
 </dependency>
 ```
 
