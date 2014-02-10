@@ -8,6 +8,8 @@ This implementation is simple but allows us to use proto messages as if they wer
 any extra cost of parsing the data into maps.
 
 
+[proto-facade "0.2.0"]
+
 ## Usage
 
 As an example a Person.proto is provided on the ```test/resources/proto``` directory.
