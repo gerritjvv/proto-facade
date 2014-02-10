@@ -8,7 +8,22 @@ This implementation is simple but allows us to use proto messages as if they wer
 any extra cost of parsing the data into maps.
 
 
-[proto-facade "0.3.0"]
+## Dependency
+
+Leiningen
+
+```[proto-facade "0.3.0"]```
+
+
+Maven
+
+```
+<dependency>
+ <groupId>proto-facade</groupId>
+ <artifactId>proto-facade</artifactId>
+ <version>0.3.0</version>
+</dependency>
+```
 
 ## Usage
 
