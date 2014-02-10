@@ -77,6 +77,6 @@
 		        (throw (UnsupportedOperationException. "put not supported")))
           (toString [this]
             ;better java interop
-            (str this))
+            (clojure.lang.RT/printString this))
 		    
 		    ))))
