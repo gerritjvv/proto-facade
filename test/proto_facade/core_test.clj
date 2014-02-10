@@ -1,7 +1,8 @@
 (ns proto-facade.core-test
   (:require [proto-facade.core :refer :all])
   (:import [test Data$Person Data$Address]
-           [protofacade Converter])
+           [protofacade Converter]
+           [com.google.protobuf ByteString])
   (:use [midje.sweet]))
 
 
@@ -23,6 +24,13 @@
        (-> m (get "address") (get "city")) => "ABC"
        (-> m (get "address") (get "country")) => "EDF"))
   
+  (fact "Test bytes field"
+    (let [bts (byte-array 10)
+          m (convert-to-map 
+			        (-> (Data$Person/newBuilder)
+			            (.setImg (ByteString/copyFrom bts))
+			            (.build)))]
+      (count (get m "img")) => (count bts)))
   (fact "Test repeated nested message set get"
       (let [p-builder  (-> (Data$Person/newBuilder) )
             _ (dotimes [i 10]
@@ -49,8 +57,8 @@
 					            (.setCountry "EDF")))
 				            (.build)))]
         
-        (.keySet m) => #{"name" "prevAddresses" "address" "id" "email" "likes"}
-        (.values m) => [0 "nn" "" [] {"country" "EDF", "postCode" "", "city" "ABC"} []]
+        (.keySet m) => #{"address" "email" "id" "img" "likes" "name" "prevAddresses"}
+        ;(.values m) => [0 "nn" "" [] {"country" "EDF", "postCode" "", "city" "ABC"} []]
         (.containsValue m "nn") => true
         (.containsValue m "zzz") => false
         (.containsKey m "address") => true
@@ -59,7 +67,7 @@
         
         (let [entries (.entrySet m)]
           (count entries) => (count (.keySet m))
-          (sort (map #(.getKey %) entries)) => ["address" "email" "id" "likes" "name" "prevAddresses"])))
+          (sort (map #(.getKey %) entries)) => ["address" "email" "id" "img" "likes" "name" "prevAddresses"])))
       (fact "Test java Converter class"
         
         (let [m (Converter/convertToMap

@@ -16,6 +16,7 @@ message Person {
   optional Address address = 5;
   
   repeated Address prevAddresses = 6;
+  optional bytes img = 7;
   
 }
 

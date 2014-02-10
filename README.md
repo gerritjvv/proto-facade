@@ -12,7 +12,7 @@ any extra cost of parsing the data into maps.
 
 Leiningen
 
-```[proto-facade "0.3.0"]```
+```[proto-facade "0.3.1"]```
 
 
 Maven
@@ -21,7 +21,7 @@ Maven
 <dependency>
  <groupId>proto-facade</groupId>
  <artifactId>proto-facade</artifactId>
- <version>0.3.0</version>
+ <version>0.3.1</version>
 </dependency>
 ```
 
@@ -75,6 +75,10 @@ System.out.println(m.get("name"));
 ```
 
 For a detailed usage see: https://github.com/gerritjvv/proto-facade/blob/master/test/proto_facade/core_test.clj
+
+# Byte Arrays
+
+All byte arrays are converted from the ```ByteString``` class to a byte array.
 
 ## License
 

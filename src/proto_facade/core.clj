@@ -1,6 +1,7 @@
 (ns proto-facade.core
   (:import [com.google.protobuf Descriptors$Descriptor MessageOrBuilder Descriptors$FieldDescriptor]
-           [java.util Map Map$Entry]))
+           [java.util Map Map$Entry]
+           [com.google.protobuf ByteString]))
 
 (defn entry-set [k v]
   (let [h (hash [k v])]
@@ -27,6 +28,10 @@
     (convert-to-map obj)
     (instance? java.util.Collection obj)
     (map resolve-value obj)
+    (instance? ByteString obj)
+    (if (nil? obj) 
+      nil
+      (.toByteArray ^ByteString obj))
     :else
     obj))
 
@@ -50,7 +55,9 @@
         
 		      (entrySet [this] (set entry-set))
 		      (get [this k]
-		        (resolve-value (.getField message (.findFieldByName descriptor k))))
+		        (try 
+                (resolve-value (.getField message (.findFieldByName descriptor k)))
+                (catch NullPointerException npe nil)))
 		      (hashCode [this]
 		          (hash message))
 		      (isEmpty [this] false)
@@ -68,5 +75,8 @@
 		        values)
 		      (clear [this] 
 		        (throw (UnsupportedOperationException. "put not supported")))
+          (toString [this]
+            ;better java interop
+            (str this))
 		    
 		    ))))
