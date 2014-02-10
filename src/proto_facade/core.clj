@@ -30,7 +30,7 @@
     (instance? MessageOrBuilder obj)
     (convert-to-map obj)
     (instance? java.util.Collection obj)
-    (map resolve-value obj)
+    (map #(resolve-value % convert-f) obj)
     (instance? ByteString obj)
     (if (nil? obj) 
       nil
