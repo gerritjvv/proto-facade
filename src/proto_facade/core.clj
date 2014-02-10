@@ -37,25 +37,27 @@
   ([^MessageOrBuilder message]
     (convert-to-map (.getDescriptorForType message) message))
   ([^Descriptors$Descriptor descriptor ^MessageOrBuilder message]
-    (let [key-set (into #{} (map (fn [^Descriptors$FieldDescriptor field] (.getName field)) (.getFields descriptor)))
+    (let [key-set (map (fn [^Descriptors$FieldDescriptor field] (.getName field)) (.getFields descriptor))
           values (map (fn [^Descriptors$FieldDescriptor field] (resolve-value (.getField message field))) (.getFields descriptor))
-          entry-set (into #{} (map (fn [^Descriptors$FieldDescriptor field] (entry-set (.getName field) (resolve-value (.getField message field)))) (.getFields descriptor)))]
+          entry-set (map (fn [^Descriptors$FieldDescriptor field] (entry-set (.getName field) (resolve-value (.getField message field)))) (.getFields descriptor))]
     
 		    (reify Map
-		      
+        
          (containsKey [this k]
 		        (-> descriptor (.findFieldByName k) nil? not))
 		      
 		      (containsValue [this k] 
-             (some #(= % k) values))
-		      (entrySet [this] entry-set)
+             (true? (some #(= % k)
+                       values)))
+        
+		      (entrySet [this] (set entry-set))
 		      (get [this k]
 		        (resolve-value (.getField message (.findFieldByName descriptor k))))
 		      (hashCode [this]
 		          (hash message))
 		      (isEmpty [this] false)
 		      (keySet [this] 
-		        key-set)
+		        (set key-set))
 		      (put [this k val]
 		        (throw (UnsupportedOperationException. "put not supported")))
 		      (putAll [this m]

@@ -36,7 +36,31 @@
           (if-let [address (first addresses)]
             (do 
               (get address "city") => (str i)
-              (recur (rest addresses) (inc i))))))))
+              (recur (rest addresses) (inc i)))))))
+    
+   (fact "Test map interface values"
+      (let [m (convert-to-map 
+				        (-> (Data$Person/newBuilder)
+                    (.setName "nn")
+				            (.setAddress
+					            (-> (Data$Address/newBuilder) 
+					            (.setCity "ABC")
+					            (.setCountry "EDF")))
+				            (.build)))]
+        
+        (.keySet m) => #{"name" "prevAddresses" "address" "id" "email" "likes"}
+        (.values m) => [0 "nn" "" [] {"country" "EDF", "postCode" "", "city" "ABC"} []]
+        (.containsValue m "nn") => true
+        (.containsValue m "zzz") => false
+        (.containsKey m "address") => true
+        (.containsKey m "bla") => false
+        (.size m) => (count (.keySet m))
+        
+        (let [entries (.entrySet m)]
+          (count entries) => (count (.keySet m))
+          (map #(.getKey %) entries) => ["email" "id" "likes" "address" "prevAddresses" "name"]))))
+          
+        
         
         
     
