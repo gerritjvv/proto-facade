@@ -10,20 +10,7 @@ any extra cost of parsing the data into maps.
 
 ## Dependency
 
-Leiningen
-
-```[proto-facade "0.3.6"]```
-
-
-Maven
-
-```
-<dependency>
- <groupId>proto-facade</groupId>
- <artifactId>proto-facade</artifactId>
- <version>0.3.6</version>
-</dependency>
-```
+[![Clojars Project](http://clojars.org/proto-facade/latest-version.svg)](http://clojars.org/proto-facade)
 
 ## Usage
 
